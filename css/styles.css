@@ -924,12 +924,26 @@ body {
   .header {
     flex-direction: column;
     gap: 8px;
-    padding: 10px 15px;
+    padding: 10px 12px;
   }
 
-  .header-stats {
-    display: none;
+  .header h1 {
+    font-size: clamp(1rem, 4vw, 1.25rem);
   }
+
+  .header .subtitle {
+    font-size: clamp(0.75rem, 3vw, 0.85rem);
+  }
+
+  .header-content {
+    gap: 10px;
+  }
+
+  .mascota-header {
+    width: 36px;
+    height: 36px;
+  }
+}
 
   .main-container {
     flex-direction: column-reverse;
@@ -937,13 +951,11 @@ body {
   }
 
   .sidebar {
-    width: 100%;
-    height: clamp(160px, 30vh, 250px);
-    order: 2;
+    display: none;
   }
 
   .map-container {
-    height: clamp(58vh, calc(100dvh - 56px - clamp(160px,30vh,250px)), 70vh);
+    height: calc(100dvh - 56px);
   }
 
   .anexos-list {
@@ -955,10 +967,17 @@ body {
   }
 
 @media (max-width: 768px) {
-  .anexo-card {
-    flex: 0 0 min(82vw, 240px);
-    min-width: min(82vw, 240px);
-    margin-bottom: 0;
+  .header-stats {
+    display: flex;
+    gap: 8px;
+  }
+  .header-stats .stat-item {
+    display: none;
+  }
+  .header-stats button {
+    padding: 6px 10px;
+    font-size: clamp(0.72rem, 3vw, 0.8rem);
+    border-radius: 16px;
   }
 }
 
