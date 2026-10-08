@@ -29,6 +29,128 @@
   to { opacity: 0; }
 }
 
+/* Tutorial */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(11, 37, 64, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.4s ease;
+}
+
+.tutorial-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  width: min(90vw, 480px);
+  position: relative;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+}
+
+.tutorial-skip-top {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #5b6b7c;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+
+.tutorial-body {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tutorial-slide {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.tutorial-slide.activo {
+  display: block;
+}
+
+.tutorial-icono {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.tutorial-slide h2 {
+  font-size: 1.4rem;
+  color: #0b2540;
+  margin-bottom: 10px;
+}
+
+.tutorial-slide p {
+  color: #5b6b7c;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.tutorial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.tutorial-btn {
+  border: none;
+  border-radius: 50px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  background: #007be0;
+  transition: all 0.2s;
+}
+
+.tutorial-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,123,224,0.3);
+}
+
+.tutorial-btn-saltar {
+  background: #e0e7ee;
+  color: #33475b;
+}
+
+.tutorial-btn-saltar:hover {
+  background: #cfd8e0;
+}
+
+.tutorial-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.tutorial-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e0;
+  transition: background 0.2s;
+}
+
+.tutorial-dot.activo {
+  background: #007be0;
+}
+
 .welcome-card {
   background: white;
   border-radius: 24px;

@@ -496,8 +496,53 @@ function cerrarBienvenida() {
     welcome.style.animation = 'fadeOut 0.4s ease forwards';
     setTimeout(() => {
       welcome.style.display = 'none';
+      abrirTutorial();
     }, 400);
   }
+}
+
+// Tutorial
+let tutorialActual = 0;
+const TOTAL_TUTORIAL = 3;
+
+function abrirTutorial() {
+  const overlay = document.getElementById('tutorial-overlay');
+  if (overlay) {
+    tutorialActual = 0;
+    overlay.style.display = 'flex';
+    actualizarTutorial();
+  }
+}
+
+function saltarTutorial() {
+  const overlay = document.getElementById('tutorial-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function tutorialSiguiente() {
+  if (tutorialActual >= TOTAL_TUTORIAL - 1) {
+    saltarTutorial();
+    return;
+  }
+  tutorialActual++;
+  actualizarTutorial();
+}
+
+function tutorialAnterior() {
+  if (tutorialActual <= 0) return;
+  tutorialActual--;
+  actualizarTutorial();
+}
+
+function actualizarTutorial() {
+  document.querySelectorAll('.tutorial-slide').forEach(slide => {
+    slide.classList.toggle('activo', parseInt(slide.dataset.slide) === tutorialActual);
+  });
+  document.querySelectorAll('.tutorial-dot').forEach(dot => {
+    dot.classList.toggle('activo', parseInt(dot.dataset.dot) === tutorialActual);
+  });
+  const btn = document.querySelector('.tutorial-btn-siguiente');
+  if (btn) btn.textContent = tutorialActual === TOTAL_TUTORIAL - 1 ? 'Empezar 🎉' : 'Siguiente ▶';
 }
 
 // Abrir orientador vocacional

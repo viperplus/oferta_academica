@@ -25,6 +25,39 @@
     </div>
   </div>
 
+  <!-- Tutorial -->
+  <div id="tutorial-overlay" class="tutorial-overlay" style="display: none;">
+    <div class="tutorial-card">
+      <button class="tutorial-skip-top" onclick="saltarTutorial()">Saltar tutorial ✕</button>
+      <div class="tutorial-body">
+        <div class="tutorial-slide activo" data-slide="0">
+          <div class="tutorial-icono">🗺️</div>
+          <h2>Explorá el mapa</h2>
+          <p>Hacé clic en un marcador <b>📚</b> para ver las carreras cercanas a esa comunidad.</p>
+        </div>
+        <div class="tutorial-slide" data-slide="1">
+          <div class="tutorial-icono">📍</div>
+          <h2>Ajustá la distancia</h2>
+          <p>Usá el control de <b>radio de búsqueda</b> (10 a 500 km) para ampliar o reducir cuánto lejos buscás.</p>
+        </div>
+        <div class="tutorial-slide" data-slide="2">
+          <div class="tutorial-icono">🐑</div>
+          <h2>Consultá a Ovejita</h2>
+          <p>Tocá la ovejita y respondé las preguntas para recibir recomendaciones de ofertas educativas.</p>
+        </div>
+      </div>
+      <div class="tutorial-footer">
+        <button class="tutorial-btn tutorial-btn-saltar" onclick="saltarTutorial()">Saltar tutorial</button>
+        <div class="tutorial-dots">
+          <span class="tutorial-dot activo" data-dot="0"></span>
+          <span class="tutorial-dot" data-dot="1"></span>
+          <span class="tutorial-dot" data-dot="2"></span>
+        </div>
+        <button class="tutorial-btn tutorial-btn-siguiente" onclick="tutorialSiguiente()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Loading -->
   <div id="loading" class="loading">
     <div class="loading-spinner"></div>
