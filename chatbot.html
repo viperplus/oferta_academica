@@ -1,0 +1,1133 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asistente Ovejita ESRN Rural</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐑</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #0b2540 0%, #0e3157 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 650px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 92vh;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #007be0, #005bb5);
+      color: white;
+      padding: 18px 20px;
+      text-align: center;
+    }
+
+    .chat-header h1 { font-size: 1.2rem; margin-bottom: 3px; }
+    .chat-header p { font-size: 0.8rem; opacity: 0.9; }
+
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 2px;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #6ac64f;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    .stats-mini {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-top: 6px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #f5f8fb;
+    }
+
+    .message {
+      display: flex;
+      gap: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user { flex-direction: row-reverse; }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .message.bot .message-avatar { background: #007be0; }
+    .message.user .message-avatar { background: #6ac64f; }
+
+    .message-content {
+      max-width: 78%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .message.bot .message-content {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-content {
+      background: #007be0;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .chat-options button {
+      background: white;
+      border: 2px solid #007be0;
+      color: #007be0;
+      padding: 7px 12px;
+      border-radius: 18px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .chat-options button:hover {
+      background: #007be0;
+      color: white;
+    }
+
+    .chat-options button.selected {
+      background: #007be0;
+      color: white;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 5px 0;
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      background: #999;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
+
+    .anexo-info {
+      background: #e3f2fd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      border-left: 4px solid #007be0;
+    }
+
+    .anexo-info h4 { color: #0b2540; font-size: 0.9rem; margin-bottom: 4px; }
+    .anexo-info p { color: #5b6b7c; font-size: 0.8rem; margin: 2px 0; }
+
+    .result-card {
+      background: white;
+      border: 2px solid #6ac64f;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 6px;
+    }
+
+    .result-card h4 { color: #0b2540; margin-bottom: 4px; font-size: 0.9rem; }
+    .result-card .institucion { color: #5b6b7c; font-size: 0.78rem; }
+
+    .result-card .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 5px;
+      font-size: 0.72rem;
+      color: #5b6b7c;
+    }
+
+    .badge {
+      background: #007be0;
+      color: white;
+      padding: 2px 7px;
+      border-radius: 8px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .badge.tecnicatura { background: #6ac64f; }
+    .badge.grado { background: #007be0; }
+
+    .distancia {
+      background: #fff3cd;
+      color: #856404;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .restart-btn {
+      background: #c0392b;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 18px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .map-btn {
+      background: #007be0;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 18px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+    }
+
+    .sin-resultados {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      color: #856404;
+      font-size: 0.85rem;
+    }
+
+    .cercanas-info {
+      background: #e8f5e9;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #2e7d32;
+    }
+
+    .locales-info {
+      background: #fff8e1;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #f57f17;
+    }
+
+    .recommendation-reason {
+      background: #f3e5f5;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: #7b1fa2;
+      font-style: italic;
+    }
+
+    .perfiles-section {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .perfil-tag {
+      display: inline-block;
+      background: #e8eaf6;
+      color: #3f51b5;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      margin: 2px;
+    }
+
+    /* Pantalla de bienvenida */
+    .welcome-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0b2540 0%, #0e3157 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    .welcome-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px 30px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .welcome-ovejita {
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .welcome-title {
+      font-size: 1.4rem;
+      color: #0b2540;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .welcome-subtitle {
+      color: #5b6b7c;
+      font-size: 0.95rem;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .welcome-btn {
+      background: linear-gradient(135deg, #007be0, #005bb5);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0,123,224,0.4);
+    }
+
+    .welcome-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,123,224,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <img src="images/ovejita.png" alt="Ovejita" style="width: 40px; height: 40px; object-fit: contain; animation: bounce 2s infinite;">
+        <div>
+          <h1>Asistente Ovejita</h1>
+          <p>Sistema de recomendación de ofertas educativas</p>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress" style="width: 0%"></div>
+      </div>
+      <div class="stats-mini">
+        <span id="pregunta-actual">Paso 1 de 6</span>
+        <span id="carreras-filtradas">140 carreras disponibles</span>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="messages"></div>
+  </div>
+
+  <script src="js/anexos.js"></script>
+  <script src="js/data.js"></script>
+  <script>
+    const TODAS_LAS_CARRERAS = [...OFERTAS_EDUCATIVAS];
+
+    // ==========================================
+    // SISTEMA DE RECOMENDACIÓN INTELIGENTE
+    // ==========================================
+    const sistemaRecomendacion = {
+      perfilesDetectados: [],
+      puntuacionCarreras: {},
+      preferenciasImplicitas: {},
+      historialPreguntas: []
+    };
+
+    const estado = {
+      pasoActual: null,
+      respuestas: {},
+      anexoSeleccionado: null,
+      carrerasFiltradas: [...TODAS_LAS_CARRERAS]
+    };
+
+    // Calcular distancia Haversine
+    function calcularDistancia(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    // ==========================================
+    // DETECTOR DE PERFILES ESTUDIANTILES
+    // ==========================================
+    function detectarPerfil() {
+      const perfiles = [];
+      const r = estado.respuestas;
+
+      // Perfil por intereses
+      if (r.intereses) {
+        if (r.intereses.some(i => i.includes('Salud'))) perfiles.push('.helper');
+        if (r.intereses.some(i => i.includes('Tecnología'))) perfiles.push('analytical');
+        if (r.intereses.some(i => i.includes('Educación'))) perfiles.push('educador');
+        if (r.intereses.some(i => i.includes('Industria'))) perfiles.push('maker');
+        if (r.intereses.some(i => i.includes('Turismo'))) perfiles.push('social');
+        if (r.intereses.some(i => i.includes('Arte'))) perfiles.push('creativo');
+        if (r.intereses.some(i => i.includes('Derecho'))) perfiles.push('justiciero');
+      }
+
+      // Perfil por movilidad
+      if (r.movilidad) {
+        if (r.movilidad.includes('No, necesito')) perfiles.push('local');
+        if (r.movilidad.includes('virtual')) perfiles.push('autonomo');
+      }
+
+      // Perfil por duración
+      if (r.duracion) {
+        if (r.duracion.includes('1-2')) perfiles.push('pragmatico');
+        if (r.duracion.includes('4-5')) perfiles.push('academico');
+      }
+
+      sistemaRecomendacion.perfilesDetectados = [...new Set(perfiles)];
+      return perfiles;
+    }
+
+    // ==========================================
+    // SISTEMA DE PUNTUACIÓN DE CARRERAS
+    // ==========================================
+    function puntuarCarrera(carrera) {
+      let puntos = 0;
+      const perfiles = sistemaRecomendacion.perfilesDetectados;
+      const r = estado.respuestas;
+      const anexo = estado.anexoSeleccionado;
+
+      // 1. PUNTUACIÓN POR DISTANCIA (0-30 puntos)
+      if (anexo && carrera.lat && carrera.lng) {
+        const dist = calcularDistancia(anexo.lat, anexo.lng, carrera.lat, carrera.lng);
+        if (dist < 30) puntos += 30;
+        else if (dist < 80) puntos += 25;
+        else if (dist < 150) puntos += 15;
+        else if (dist < 300) puntos += 5;
+      }
+
+      // 2. PUNTUACIÓN POR PERFIL (0-25 puntos)
+      if (perfiles.includes('helper') && carrera.area?.includes('Salud')) puntos += 25;
+      if (perfiles.includes('analytical') && carrera.area?.includes('Tecnología')) puntos += 25;
+      if (perfiles.includes('educador') && carrera.area?.includes('Educación')) puntos += 25;
+      if (perfiles.includes('maker') && carrera.area?.includes('Industria')) puntos += 25;
+      if (perfiles.includes('social') && carrera.area?.includes('Turismo')) puntos += 25;
+      if (perfiles.includes('creativo') && carrera.area?.includes('Arte')) puntos += 25;
+      if (perfiles.includes('justiciero') && carrera.area?.includes('Derecho')) puntos += 25;
+
+      // 3. PUNTUACIÓN POR MODALIDAD (0-15 puntos)
+      if (r.modalidad) {
+        if (r.modalidad.includes('Cualquiera')) puntos += 10;
+        else if (r.modalidad.includes('Virtual') && carrera.modalidad === 'Virtual') puntos += 15;
+        else if (r.modalidad.includes('Semipresencial') && carrera.modalidad === 'Semipresencial') puntos += 15;
+        else if (r.modalidad.includes('Presencial') && carrera.modalidad === 'Presencial') puntos += 15;
+      }
+
+      // 4. PUNTUACIÓN POR DURACIÓN (0-10 puntos)
+      if (r.duracion) {
+        if (r.duracion.includes('Sin preferencia')) puntos += 8;
+        else if (r.duracion.includes('1-2') && (carrera.duracion?.includes('1') || carrera.duracion?.includes('2'))) puntos += 10;
+        else if (r.duracion.includes('3') && carrera.duracion?.includes('3')) puntos += 10;
+        else if (r.duracion.includes('4-5') && (carrera.duracion?.includes('4') || carrera.duracion?.includes('5'))) puntos += 10;
+      }
+
+      // 5. PUNTUACIÓN POR DEMANDA LABORAL (0-10 puntos)
+      const carrerasAltaDemanda = ['Enfermería', 'Programación', 'Docencia', 'Minería', 'Petróleo'];
+      if (carrerasAltaDemanda.some(d => carrera.carrera?.includes(d))) puntos += 10;
+
+      // 6. PUNTUACIÓN POR TIPO (0-5 puntos)
+      if (carrera.tipo === 'Tecnicatura') puntos += 3;
+      if (carrera.tipo === 'Grado') puntos += 5;
+
+      return puntos;
+    }
+
+    // ==========================================
+    // GENERADOR DE RAZONES DE RECOMENDACIÓN
+    // ==========================================
+    function generarRazon(carrera) {
+      const razones = [];
+      const anexo = estado.anexoSeleccionado;
+      const r = estado.respuestas;
+
+      // Razón por cercanía
+      if (anexo && carrera.lat && carrera.lng) {
+        const dist = Math.round(calcularDistancia(anexo.lat, anexo.lng, carrera.lat, carrera.lng));
+        if (dist < 50) razones.push(`Muy cerca de ${anexo.localidad} (${dist}km)`);
+        else if (dist < 150) razones.push(`Accesible desde ${anexo.localidad} (${dist}km)`);
+      }
+
+      // Razón por perfil
+      if (r.intereses) {
+        if (r.intereses.some(i => i.includes('Salud')) && carrera.area?.includes('Salud')) {
+          razones.push('Coincide con tu interés en Salud');
+        }
+        if (r.intereses.some(i => i.includes('Tecnología')) && carrera.area?.includes('Tecnología')) {
+          razones.push('Perfecta para tu perfil técnico');
+        }
+      }
+
+      // Razón por modalidad
+      if (r.modalidad?.includes('Virtual') && carrera.modalidad === 'Virtual') {
+        razones.push('100% virtual - estudias desde casa');
+      }
+
+      // Razón por demanda
+      if (carrera.carrera?.includes('Enfermería')) {
+        razones.push('Alta demanda laboral en la región');
+      }
+
+      return razones.length > 0 ? razones[0] : 'Podría interesarte según tus respuestas';
+    }
+
+    // ==========================================
+    // PREGUNTAS DEL CHATBOT
+    // ==========================================
+    const preguntas = [
+      { id: 'anexo', mensaje: '📍 ¿En cuál de estos anexos de la ESRN Rural estás? Seleccioná tu comunidad:', tipo: 'seleccion_anexos' },
+      { id: 'movilidad', mensaje: '🚗 ¿Podés movilizarte a otra localidad para estudiar?', tipo: 'seleccion', opciones: ['Sí, puedo ir a cualquier lugar', 'Sí, puedo ir a localidades cercanas', 'No, necesito estudiar en mi localidad', 'Prefiero opciones virtuales'] },
+      { id: 'intereses', mensaje: '🎯 ¿Qué área te interesa más? (Elegí una o varias)', tipo: 'multi_seleccion', opciones: [] },
+      { id: 'modalidad', mensaje: '💻 ¿Qué modalidad de estudio preferís?', tipo: 'seleccion', opciones: ['Presencial', 'Virtual', 'Semipresencial', 'Cualquiera me sirve'] },
+      { id: 'duracion', mensaje: '⏱️ ¿Cuánto tiempo querés dedicar a tus estudios?', tipo: 'seleccion', opciones: ['1-2 años (formación rápida)', '3 años (tecnicatura)', '4-5 años (carrera de grado)', 'Sin preferencia'] }
+    ];
+
+    // ==========================================
+    // FUNCIONES PRINCIPALES
+    // ==========================================
+    function iniciarChat() {
+      mostrarPaso('anexo');
+    }
+
+    function mostrarPaso(pasoId) {
+      const paso = preguntas.find(p => p.id === pasoId);
+      if (!paso) return;
+      estado.pasoActual = paso;
+      mostrarMensajeBot(paso.mensaje);
+
+      if (paso.tipo === 'seleccion_anexos') {
+        setTimeout(() => mostrarListaAnexos(), 500);
+      } else {
+        setTimeout(() => mostrarOpciones(paso.opciones, paso.tipo === 'multi_seleccion'), 500);
+      }
+      actualizarEstadisticas();
+    }
+
+    function mostrarListaAnexos() {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'message bot';
+
+      const anexosHTML = ANEXOS_ESRN.map(a => 
+        `<button onclick="seleccionarAnexo(${a.id})" data-anexo="${a.id}">${a.nombre} - ${a.localidad}</button>`
+      ).join('');
+
+      div.innerHTML = `
+        <div class="message-avatar">🐑</div>
+        <div class="message-content">
+          <div class="chat-options" id="opciones-container" style="max-height: 300px; overflow-y: auto;">
+            ${anexosHTML}
+          </div>
+        </div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function seleccionarAnexo(anexoId) {
+      const anexo = ANEXOS_ESRN.find(a => a.id === anexoId);
+      if (!anexo) return;
+
+      estado.anexoSeleccionado = anexo;
+      estado.respuestas.anexo = anexo;
+
+      mostrarMensajeUsuario(`${anexo.nombre} - ${anexo.localidad}`);
+
+      const container = document.getElementById('opciones-container');
+      if (container) container.parentElement.parentElement.remove();
+
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'anexo-info';
+      infoDiv.innerHTML = `
+        <h4>📍 ${anexo.nombre} - ${anexo.localidad}</h4>
+        <p><strong>Departamento:</strong> ${anexo.departamento}</p>
+      `;
+      document.getElementById('messages').appendChild(infoDiv);
+
+      mostrarTyping();
+      setTimeout(() => {
+        ocultarTyping();
+        mostrarPaso('movilidad');
+      }, 800);
+    }
+
+    function mostrarMensajeBot(texto) {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'message bot';
+      div.innerHTML = `
+        <div class="message-avatar">🐑</div>
+        <div class="message-content">${texto}</div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function mostrarMensajeUsuario(texto) {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'message user';
+      div.innerHTML = `
+        <div class="message-avatar">👤</div>
+        <div class="message-content">${texto}</div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function mostrarTyping() {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'message bot';
+      div.id = 'typing';
+      div.innerHTML = `
+        <div class="message-avatar">🐑</div>
+        <div class="message-content">
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function ocultarTyping() {
+      const t = document.getElementById('typing');
+      if (t) t.remove();
+    }
+
+    let seleccionMultiple = [];
+
+    function mostrarOpciones(opciones, multiSelect = false) {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'message bot';
+
+      const btns = opciones.map(op => 
+        `<button onclick="seleccionarOpcion(this, '${op.replace(/'/g, "\\'")}', ${multiSelect})">${op}</button>`
+      ).join('');
+
+      div.innerHTML = `
+        <div class="message-avatar">🐑</div>
+        <div class="message-content">
+          <div class="chat-options" id="opciones-container">
+            ${btns}
+            ${multiSelect ? '<button onclick="confirmarMultiSeleccion()" style="background:#6ac64f;color:white;border-color:#6ac64f;">✓ Confirmar</button>' : ''}
+          </div>
+        </div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function seleccionarOpcion(btn, opcion, multiSelect) {
+      if (multiSelect) {
+        btn.classList.toggle('selected');
+        if (btn.classList.contains('selected')) {
+          seleccionMultiple.push(opcion);
+        } else {
+          seleccionMultiple = seleccionMultiple.filter(o => o !== opcion);
+        }
+        return;
+      }
+
+      mostrarMensajeUsuario(opcion);
+      estado.respuestas[estado.pasoActual.id] = opcion;
+
+      const container = document.getElementById('opciones-container');
+      if (container) container.parentElement.parentElement.remove();
+
+      // Actualizar opciones según movilidad
+      if (estado.pasoActual.id === 'movilidad') {
+        actualizarOpcionesIntereses(opcion);
+      }
+
+      mostrarTyping();
+      setTimeout(() => {
+        ocultarTyping();
+        
+        // Saltar preguntas redundantes según respuestas
+        let siguienteIndex = preguntas.indexOf(estado.pasoActual) + 1;
+        let siguiente = preguntas[siguienteIndex];
+        
+        // Si eligió "virtual" en movilidad, saltar pregunta de modalidad
+        if (estado.respuestas.movilidad?.includes('virtual') && siguiente?.id === 'modalidad') {
+          estado.respuestas.modalidad = 'Virtual'; // Auto-asignar
+          siguienteIndex++;
+          siguiente = preguntas[siguienteIndex];
+        }
+        
+        if (siguiente) {
+          mostrarPaso(siguiente.id);
+        } else {
+          mostrarResultados();
+        }
+      }, 600);
+    }
+
+    function confirmarMultiSeleccion() {
+      if (seleccionMultiple.length === 0) {
+        alert('Elegí al menos una opción');
+        return;
+      }
+
+      mostrarMensajeUsuario(seleccionMultiple.join(', '));
+      estado.respuestas[estado.pasoActual.id] = [...seleccionMultiple];
+
+      const container = document.getElementById('opciones-container');
+      if (container) container.parentElement.parentElement.remove();
+
+      seleccionMultiple = [];
+      mostrarTyping();
+      setTimeout(() => {
+        ocultarTyping();
+        
+        // Saltar preguntas redundantes según respuestas
+        let siguienteIndex = preguntas.indexOf(estado.pasoActual) + 1;
+        let siguiente = preguntas[siguienteIndex];
+        
+        // Si eligió "virtual" en movilidad, saltar pregunta de modalidad
+        if (estado.respuestas.movilidad?.includes('virtual') && siguiente?.id === 'modalidad') {
+          estado.respuestas.modalidad = 'Virtual'; // Auto-asignar
+          siguienteIndex++;
+          siguiente = preguntas[siguienteIndex];
+        }
+        
+        if (siguiente) {
+          mostrarPaso(siguiente.id);
+        } else {
+          mostrarResultados();
+        }
+      }, 600);
+    }
+
+    function actualizarOpcionesIntereses(movilidad) {
+      const anexo = estado.anexoSeleccionado;
+      let carrerasDisponibles = [...TODAS_LAS_CARRERAS];
+
+      if (movilidad.includes('No, necesito')) {
+        carrerasDisponibles = carrerasDisponibles.filter(c => {
+          const dist = calcularDistancia(anexo.lat, anexo.lng, c.lat, c.lng);
+          return dist < 50;
+        });
+      } else if (movilidad.includes('cercanas')) {
+        carrerasDisponibles = carrerasDisponibles.filter(c => {
+          const dist = calcularDistancia(anexo.lat, anexo.lng, c.lat, c.lng);
+          return dist <= 150;
+        });
+      }
+
+      const areasDisponibles = new Set();
+      carrerasDisponibles.forEach(c => {
+        if (c.area) {
+          const areaEmoji = {
+            'Salud': '🏥 Salud',
+            'Educación': '📚 Educación',
+            'Tecnología': '💻 Tecnología',
+            'Informática': '💻 Tecnología',
+            'Administración': '💼 Administración',
+            'Industria': '🏗️ Industria',
+            'Turismo': '✈️ Turismo',
+            'Gastronomía': '✈️ Turismo',
+            'Arte': '🎨 Arte y Diseño',
+            'Diseño': '🎨 Arte y Diseño',
+            'Minería': '⚡ Minería y Energía',
+            'Energía': '⚡ Minería y Energía',
+            'Agropecuario': '🌾 Agropecuario',
+            'Producción': '🌾 Agropecuario',
+            'Derecho': '⚖️ Derecho',
+            'Jurídico': '⚖️ Derecho'
+          };
+          
+          Object.keys(areaEmoji).forEach(key => {
+            if (c.area.includes(key)) {
+              areasDisponibles.add(areaEmoji[key]);
+            }
+          });
+        }
+      });
+
+      const preguntaIntereses = preguntas.find(p => p.id === 'intereses');
+      if (preguntaIntereses && areasDisponibles.size > 0) {
+        preguntaIntereses.opciones = [...areasDisponibles].sort();
+      }
+    }
+
+    function actualizarEstadisticas() {
+      document.getElementById('carreras-filtradas').textContent = 
+        `${estado.carrerasFiltradas.length} carreras disponibles`;
+      const index = preguntas.indexOf(estado.pasoActual);
+      document.getElementById('pregunta-actual').textContent = `Paso ${index + 1} de ${preguntas.length}`;
+      document.getElementById('progress').style.width = `${((index + 1) / preguntas.length) * 100}%`;
+    }
+
+    // ==========================================
+    // FILTRADO Y PUNTUACIÓN INTELIGENTE
+    // ==========================================
+    function filtrarYpuntuar() {
+      // Detectar perfil del estudiante
+      detectarPerfil();
+
+      // Filtrar por movilidad
+      let candidatas = [...TODAS_LAS_CARRERAS];
+      const anexo = estado.anexoSeleccionado;
+      const movilidad = estado.respuestas.movilidad;
+
+      if (movilidad) {
+        if (movilidad.includes('No, necesito')) {
+          candidatas = candidatas.filter(c => {
+            const dist = calcularDistancia(anexo.lat, anexo.lng, c.lat, c.lng);
+            return dist < 50;
+          });
+        } else if (movilidad.includes('cercanas')) {
+          candidatas = candidatas.filter(c => {
+            const dist = calcularDistancia(anexo.lat, anexo.lng, c.lat, c.lng);
+            return dist <= 150;
+          });
+        } else if (movilidad.includes('virtual')) {
+          const virtuales = candidatas.filter(c => c.modalidad === 'Virtual');
+          if (virtuales.length > 0) candidatas = virtuales;
+        }
+      }
+
+      // Filtrar por intereses (con fallback)
+      let candidatasConArea = candidatas;
+      if (estado.respuestas.intereses && estado.respuestas.intereses.length > 0) {
+        const areas = estado.respuestas.intereses.map(r => {
+          const match = r.match(/(\w[\w\s]*?)[\s]*[\(]/);
+          return match ? match[1].trim() : r.replace(/[^\w\s]/g, '').trim();
+        });
+
+        candidatasConArea = candidatas.filter(c => 
+          areas.some(a => c.area?.includes(a) || c.carrera?.includes(a))
+        );
+
+        if (candidatasConArea.length === 0) {
+          candidatasConArea = candidatas.filter(c => 
+            areas.some(a => 
+              c.area?.toLowerCase().includes(a.toLowerCase()) || 
+              c.carrera?.toLowerCase().includes(a.toLowerCase())
+            )
+          );
+        }
+      }
+
+      // Filtrar por modalidad (con fallback)
+      let candidatasConModalidad = candidatasConArea;
+      if (estado.respuestas.modalidad && !estado.respuestas.modalidad.includes('Cualquiera')) {
+        if (estado.respuestas.modalidad.includes('Virtual')) {
+          candidatasConModalidad = candidatasConArea.filter(c => c.modalidad === 'Virtual');
+        } else if (estado.respuestas.modalidad.includes('Semipresencial')) {
+          candidatasConModalidad = candidatasConArea.filter(c => c.modalidad === 'Semipresencial');
+        } else {
+          candidatasConModalidad = candidatasConArea.filter(c => c.modalidad === 'Presencial');
+        }
+      }
+
+      // Filtrar por duración (con fallback)
+      let candidatasConDuracion = candidatasConModalidad;
+      if (estado.respuestas.duracion && !estado.respuestas.duracion.includes('Sin preferencia')) {
+        if (estado.respuestas.duracion.includes('1-2')) {
+          candidatasConDuracion = candidatasConModalidad.filter(c => c.duracion?.includes('1') || c.duracion?.includes('2'));
+        } else if (estado.respuestas.duracion.includes('3')) {
+          candidatasConDuracion = candidatasConModalidad.filter(c => c.duracion?.includes('3'));
+        } else if (estado.respuestas.duracion.includes('4-5')) {
+          candidatasConDuracion = candidatasConModalidad.filter(c => c.duracion?.includes('4') || c.duracion?.includes('5'));
+        }
+      }
+
+      // SISTEMA DE FALLBACK INTELIGENTE
+      let resultado = [];
+      let razonFallback = '';
+
+      if (candidatasConDuracion.length > 0) {
+        // Caso ideal: hay carreras que cumplen todos los filtros
+        resultado = candidatasConDuracion;
+      } else if (candidatasConModalidad.length > 0) {
+        // Fallback 1: no hay con esa duración, pero sí con esa modalidad
+        resultado = candidatasConModalidad;
+        razonFallback = 'No hay carreras con esa duración, te muestro opciones con la modalidad que elegiste';
+      } else if (candidatasConArea.length > 0) {
+        // Fallback 2: no hay con esa modalidad, pero sí en esa área
+        resultado = candidatasConArea;
+        razonFallback = 'No hay con esa modalidad, te muestro carreras de tu área de interés';
+      } else {
+        // Fallback 3: no hay en esa área, mostrar todas
+        resultado = candidatas;
+        razonFallback = 'No encontré en esa área, te muestro todas las opciones disponibles';
+      }
+
+      // Puntuar cada carrera
+      resultado = resultado.map(c => ({
+        ...c,
+        puntuacion: puntuarCarrera(c),
+        razon: razonFallback || generarRazon(c),
+        distancia: anexo ? calcularDistancia(anexo.lat, anexo.lng, c.lat, c.lng) : 0
+      }));
+
+      // Ordenar por puntuación (mayor = mejor)
+      resultado.sort((a, b) => b.puntuacion - a.puntuacion);
+
+      estado.carrerasFiltradas = resultado;
+      estado.razonFallback = razonFallback;
+    }
+
+    // ==========================================
+    // MOSTRAR RESULTADOS
+    // ==========================================
+    function mostrarResultados() {
+      document.getElementById('progress').style.width = '100%';
+      document.getElementById('pregunta-actual').textContent = '¡Resultados!';
+
+      filtrarYpuntuar();
+
+      const carreras = estado.carrerasFiltradas.slice(0, 8);
+      const anexo = estado.anexoSeleccionado;
+      const movilidad = estado.respuestas.movilidad;
+      const perfiles = sistemaRecomendacion.perfilesDetectados;
+
+      if (carreras.length === 0) {
+        mostrarMensajeBot(`
+          <div class="sin-resultados">
+            <strong>😔 No encontré carreras que coincidan</strong><br><br>
+            Intentá con otros filtros o verificá tu ubicación.
+          </div>
+        `);
+        mostrarBotonesFinales();
+        return;
+      }
+
+      let html = `<strong>¡Encontré ${carreras.length} opciones para vos! 🎉</strong>`;
+
+      // Mostrar razón de fallback si existe
+      if (estado.razonFallback) {
+        html += `<div class="locales-info">⚠️ ${estado.razonFallback}</div>`;
+      }
+
+      // Info de perfil detectado
+      if (perfiles.length > 0) {
+        const perfilTags = perfiles.map(p => `<span class="perfil-tag">${getPerfilEmoji(p)} ${getPerfilNombre(p)}</span>`).join(' ');
+        html += `<div class="perfiles-section"><strong>Tu perfil:</strong> ${perfilTags}</div>`;
+      }
+
+      // Info según movilidad
+      if (movilidad && movilidad.includes('No, necesito')) {
+        html += `<div class="locales-info">📍 Solo carreras en ${anexo.localidad} y alrededores</div>`;
+      } else if (movilidad && movilidad.includes('cercanas')) {
+        html += `<div class="cercanas-info">📍 Carreras en un radio de 150km</div>`;
+      }
+
+      carreras.forEach(c => {
+        const dist = Math.round(c.distancia || 0);
+        html += `
+          <div class="result-card">
+            <h4>${c.carrera}</h4>
+            <div class="institucion">🏫 ${c.institucion}</div>
+            <div class="meta">
+              <span class="badge ${c.tipo?.toLowerCase()}">${c.tipo}</span>
+              <span>📍 ${c.localidad}</span>
+              ${dist > 0 ? `<span class="distancia">🚗 ${dist}km</span>` : ''}
+            </div>
+            <div class="meta">
+              <span>⏱️ ${c.duracion}</span>
+              <span>💻 ${c.modalidad}</span>
+            </div>
+            <div class="recommendation-reason">💡 ${c.razon}</div>
+          </div>
+        `;
+      });
+
+      mostrarMensajeBot(html);
+      setTimeout(() => {
+        mostrarBotonesFinales();
+      }, 400);
+    }
+
+    function getPerfilEmoji(perfil) {
+      const emojis = {
+        'helper': '🏥',
+        'analytical': '💻',
+        'educador': '📚',
+        'maker': '🏗️',
+        'social': '✈️',
+        'creativo': '🎨',
+        'justiciero': '⚖️',
+        'local': '📍',
+        'autonomo': '🏠',
+        'pragmatico': '⚡',
+        'academico': '🎓'
+      };
+      return emojis[perfil] || '👤';
+    }
+
+    function getPerfilNombre(perfil) {
+      const nombres = {
+        'helper': 'Ayudador',
+        'analytical': 'Analítico',
+        'educador': 'Educador',
+        'maker': 'Creador',
+        'social': 'Social',
+        'creativo': 'Creativo',
+        'justiciero': 'Justiciero',
+        'local': 'Local',
+        'autonomo': 'Autónomo',
+        'pragmatico': 'Pragmático',
+        'academico': 'Académico'
+      };
+      return nombres[perfil] || perfil;
+    }
+
+    function mostrarBotonesFinales() {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'message bot';
+      div.innerHTML = `
+        <div class="message-avatar">🐑</div>
+        <div class="message-content">
+          <p style="margin-bottom: 8px;">¿Qué querés hacer ahora?</p>
+          <div class="btn-group">
+            <button class="restart-btn" onclick="reiniciarChat()">🔄 Empezar de nuevo</button>
+            <a href="index.html" class="map-btn">🗺️ Ver mapa</a>
+          </div>
+        </div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function reiniciarChat() {
+      estado.carrerasFiltradas = [...TODAS_LAS_CARRERAS];
+      estado.respuestas = {};
+      estado.anexoSeleccionado = null;
+      sistemaRecomendacion.perfilesDetectados = [];
+      seleccionMultiple = [];
+      document.getElementById('messages').innerHTML = '';
+      document.getElementById('progress').style.width = '0%';
+      document.getElementById('pregunta-actual').textContent = 'Paso 1 de 6';
+      document.getElementById('carreras-filtradas').textContent = `${TODAS_LAS_CARRERAS.length} carreras disponibles`;
+      iniciarChat();
+    }
+
+    // Cerrar pantalla de bienvenida
+    function cerrarBienvenida() {
+      const welcome = document.getElementById('welcome-screen');
+      if (welcome) {
+        welcome.style.animation = 'fadeOut 0.4s ease forwards';
+        setTimeout(() => {
+          welcome.style.display = 'none';
+        }, 400);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('carreras-filtradas').textContent = `${TODAS_LAS_CARRERAS.length} carreras disponibles`;
+      iniciarChat();
+    });
+  </script>
+</body>
+</html>

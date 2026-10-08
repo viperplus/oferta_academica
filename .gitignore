@@ -1,0 +1,13 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos de servidor
+iniciar-servidor.bat
+
+# Archivos de editor
+.vscode/
+.idea/
+*.swp
+*.swo
