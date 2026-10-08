@@ -21,27 +21,7 @@ Mapa interactivo + Asistente Ovejita (chatbot de recomendación de ofertas educa
 2. Abra el archivo `index.html` en su navegador
 3. ¡Listo! No requiere servidor web
 
-### Opción 2: GitHub Pages (recomendado)
-Siga las instrucciones en la sección [Subir a GitHub Pages](#-subir-a-github-pages)
 
-## 📁 Estructura del proyecto
-
-```
-esrn-rural-mapa/
-├── index.html              # Mapa principal
-├── chatbot.html            # Asistente Ovejita (recomendación de ofertas)
-├── css/
-│   ├── styles.css          # Estilos personalizados
-│   ├── leaflet.css         # Estilos de Leaflet
-│   └── images/             # Iconos del mapa
-├── js/
-│   ├── app.js              # Lógica principal del mapa
-│   ├── data.js             # Datos de ofertas educativas
-│   ├── anexos.js           # Coordenadas de anexos ESRN
-│   └── leaflet.js          # Librería Leaflet
-├── images/                 # Iconos de marcadores
-└── README.md               # Este archivo
-```
 
 ## 🛠️ Tecnologías utilizadas
 
@@ -49,67 +29,6 @@ esrn-rural-mapa/
 - **OpenStreetMap** - Mapas base gratuitos
 - **HTML5/CSS3/JavaScript** vanilla
 
----
-
-## 🚀 Subir a GitHub Pages
-
-### Paso 1: Crear repositorio en GitHub
-
-1. Ingrese a [github.com](https://github.com)
-2. Haga clic en **"+"** → **"New repository"**
-3. Nombre: `esrn-rural-mapa`
-4. Descripción: "Mapa interactivo de oferta educativa ESRN Rural"
-5. Seleccione **Public**
-6. Haga clic en **"Create repository"**
-
-### Paso 2: Subir archivos
-
-#### Opción A: Usando Git (recomendado)
-
-```bash
-# Clonar el repositorio
-git clone https://github.com/SU_USUARIO/esrn-rural-mapa.git
-
-# Copiar los archivos del proyecto a la carpeta clonada
-
-# Agregar archivos
-cd esrn-rural-mapa
-git add .
-
-# Commit
-git commit -m "Initial commit: Mapa interactivo ESRN Rural"
-
-# Push
-git push origin main
-```
-
-#### Opción B: Subir por la web
-
-1. En su repositorio, haga clic en **"uploading an existing file"**
-2. Arrastre TODA la carpeta del proyecto (index.html, chatbot.html, css/, js/, images/)
-3. Haga clic en **"Commit changes"**
-
-### Paso 3: Activar GitHub Pages
-
-1. Vaya a **Settings** → **Pages** (en el menú lateral)
-2. En **Source**, seleccione **"Deploy from a branch"**
-3. En **Branch**, seleccione **"main"** y carpeta **"/ (root)"**
-4. Haga clic en **Save**
-
-### Paso 4: Acceder a su sitio
-
-Espere 1-2 minutos y luego acceda a:
-```
-https://SU_USUARIO.github.io/esrn-rural-mapa/
-```
-
-### Ejemplo:
-Si su usuario es `mi-usuario`, la URL será:
-```
-https://mi-usuario.github.io/esrn-rural-mapa/
-```
-
----
 
 ## 🎯 Funcionalidades del Chatbot
 
