@@ -442,10 +442,13 @@ function centrarProvincia() {
   document.querySelectorAll('.anexo-card').forEach(card => {
     card.classList.remove('active');
   });
-  document.getElementById('info-panel').innerHTML = `
-    <h3>Seleccioná un anexo</h3>
-    <p>Hacé clic en un marcador del mapa o en la lista para ver las carreras cercanas.</p>
-  `;
+  const panel = document.getElementById('info-panel');
+  if (panel) {
+    panel.innerHTML = `
+      <h3>Seleccioná un anexo</h3>
+      <p>Hacé clic en un marcador del mapa o en la lista para ver las carreras cercanas.</p>
+    `;
+  }
 }
 
 // Inicializar
