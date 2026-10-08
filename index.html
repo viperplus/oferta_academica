@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Interactivo - Oferta Educativa ESRN Rural</title>
+
+  <!-- Leaflet CSS (local) -->
+  <link rel="stylesheet" href="css/leaflet.css" />
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/ovejita.png">
+</head>
+<body>
+  <!-- Pantalla de bienvenida -->
+  <div id="welcome-screen" class="welcome-screen">
+    <div class="welcome-card">
+      <img src="images/ovejita.png" alt="Ovejita" class="welcome-ovejita">
+      <h1 class="welcome-title">¡Bienvenid@s al Sistema de Búsqueda de Oferta Educativa!</h1>
+      <p class="welcome-subtitle">Explorá la oferta educativa de tu comunidad ESRN Rural</p>
+      <button class="welcome-btn" onclick="cerrarBienvenida()">Comenzar</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" class="loading">
+    <div class="loading-spinner"></div>
+    <p>Cargando mapa...</p>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <img src="images/ovejita.png" alt="Ovejita" class="mascota-header">
+      <div>
+        <h1>🗺️ Mapa Educativo Río Negro</h1>
+        <span class="subtitle">Oferta Educativa - ESRN Rural Virtual</span>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-item">
+        <div class="stat-value">651</div>
+        <div class="stat-label">Carreras</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">27</div>
+        <div class="stat-label">Anexos ESRN</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">23</div>
+        <div class="stat-label">Localidades</div>
+      </div>
+      <button onclick="abrirOrientador()" style="background: #6ac64f; color: white; padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem;">🐑 Consultarle a la asistente Ovejita</button>
+    </div>
+  </header>
+
+  <!-- Contenedor principal -->
+  <div class="main-container">
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+      <!-- Búsqueda y filtros -->
+      <div class="sidebar-header">
+        <h2>Anexos ESRN Rural</h2>
+        <div class="search-box">
+          <input type="text" id="busqueda" placeholder="Buscar localidad o carrera...">
+          <button onclick="centrarProvincia()">🔍</button>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros-container">
+        <div class="filtro-grupo">
+          <label for="filtro-tipo">Tipo de formación</label>
+          <select id="filtro-tipo">
+            <option value="todos">Todos</option>
+            <option value="Tecnicatura">Tecnicatura</option>
+            <option value="Grado">Grado (Licenciatura/Ingeniería)</option>
+            <option value="Formación Profesional">Formación Profesional</option>
+            <option value="Posgrado">Posgrado</option>
+          </select>
+        </div>
+
+        <div class="filtro-grupo">
+          <label for="filtro-area">Área temática</label>
+          <select id="filtro-area">
+            <option value="todas">Todas</option>
+            <option value="Salud">Salud</option>
+            <option value="Educación">Educación</option>
+            <option value="Industria">Industria</option>
+            <option value="Administración">Administración</option>
+            <option value="Turismo">Turismo</option>
+            <option value="Tecnología">Tecnología</option>
+            <option value="Minería">Minería</option>
+          </select>
+        </div>
+
+        <div class="filtro-grupo">
+          <label for="filtro-modalidad">Modalidad</label>
+          <select id="filtro-modalidad">
+            <option value="todas">Todas</option>
+            <option value="Presencial">Presencial</option>
+            <option value="Virtual">Virtual</option>
+            <option value="Semipresencial">Semipresencial</option>
+          </select>
+        </div>
+
+        <div class="filtro-grupo filtro-km">
+          <label for="filtro-km">📍 Radio de búsqueda: <span id="km-valor">100</span> km</label>
+          <input type="range" id="filtro-km" min="10" max="500" value="100" step="10">
+          <div class="km-labels">
+            <span>10km</span>
+            <span>500km</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de anexos -->
+      <div id="anexos-list" class="anexos-list">
+        <!-- Se llena dinámicamente -->
+      </div>
+    </aside>
+
+    <!-- Mapa -->
+    <div class="map-container">
+      <div id="map"></div>
+
+      <!-- Botón de geolocalización -->
+      <button class="geo-btn" onclick="geolocalizar()" title="Mi ubicación">
+        📍
+      </button>
+
+      <!-- Panel de información -->
+      <div id="info-panel" class="info-panel">
+        <h3>Seleccioná un anexo</h3>
+        <p>Hacé clic en un marcador del mapa o en la lista para ver las carreras cercanas.</p>
+      </div>
+
+      <!-- Leyenda -->
+      <div class="leyenda">
+        <h4>Leyenda</h4>
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background: #007be0;"></div>
+          <span>Anexos ESRN Rural</span>
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background: #6ac64f;"></div>
+          <span>Localidades con oferta</span>
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background: #c9721b;"></div>
+          <span>Alto Valle (44%)</span>
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background: #6a4fb0;"></div>
+          <span>Andina (22%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay del Orientador -->
+  <div id="orientador-overlay" class="orientador-overlay" style="display: none;">
+    <div class="orientador-modal">
+      <div class="orientador-header">
+        <h2>🐑 Consultarle a la asistente Ovejita</h2>
+        <button class="orientador-close" onclick="cerrarOrientador()">✕</button>
+      </div>
+      <iframe src="chatbot.html" class="orientador-iframe"></iframe>
+    </div>
+  </div>
+
+  <!-- Mascota flotante -->
+  <img src="images/ovejita.png" alt="Ovejita" class="mascota-flotante" onclick="abrirOrientador()" title="¡Hablá conmigo!">
+
+  <!-- Leaflet JS (local) -->
+  <script src="js/leaflet.js"></script>
+
+  <!-- Datos -->
+  <script src="js/anexos.js"></script>
+  <script src="js/data.js"></script>
+
+  <!-- App -->
+  <script src="js/app.js"></script>
+</body>
+</html>
