@@ -945,6 +945,7 @@ body {
   }
 }
 
+@media (max-width: 768px) {
   .main-container {
     flex-direction: column-reverse;
     height: calc(100dvh - 56px);
@@ -965,6 +966,7 @@ body {
     gap: 8px;
     padding: 8px;
   }
+}
 
 @media (max-width: 768px) {
   .header-stats {
