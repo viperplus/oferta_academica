@@ -542,7 +542,7 @@ function actualizarTutorial() {
     dot.classList.toggle('activo', parseInt(dot.dataset.dot) === tutorialActual);
   });
   const btn = document.querySelector('.tutorial-btn-siguiente');
-  if (btn) btn.textContent = tutorialActual === TOTAL_TUTORIAL - 1 ? 'Empezar 🎉' : 'Siguiente ▶';
+  if (btn) btn.textContent = tutorialActual === TOTAL_TUTORIAL - 1 ? 'Empezar' : 'Siguiente ▶';
 }
 
 // Abrir orientador vocacional
