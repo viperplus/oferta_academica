@@ -20,6 +20,7 @@ let markers = [];
 let anexosMarkers = [];
 let selectedAnexo = null;
 let radioBusqueda = 100; // km por defecto
+let filtros = { tipo: '', area: '', modalidad: '' };
 
 // Inicializar el mapa
 function initMap() {
@@ -235,7 +236,7 @@ function cambiarPagina(popupId, direccion, porPagina, totalPaginas) {
 
 // Popup mejorado para localidad
 function createLocalidadPopup(localidad) {
-  const cursos = OFERTAS_EDUCATIVAS.filter(c => c.localidad === localidad.nombre);
+  const cursos = cursosFiltrados().filter(c => c.localidad === localidad.nombre);
 
   const cursosHTML = cursos.slice(0, 8).map(c => `
     <div class="curso-item">
@@ -275,7 +276,7 @@ function createLocalidadPopup(localidad) {
 
 // Encontrar cursos cercanos
 function findCursosCercanos(lat, lng, radioKm) {
-  return OFERTAS_EDUCATIVAS.filter(curso => {
+  return cursosFiltrados().filter(curso => {
     const distancia = calcularDistancia(lat, lng, curso.lat, curso.lng);
     return distancia <= radioKm;
   }).sort((a, b) => {
@@ -283,6 +284,39 @@ function findCursosCercanos(lat, lng, radioKm) {
     const distB = calcularDistancia(lat, lng, b.lat, b.lng);
     return distA - distB;
   });
+}
+
+// Ofertas filtradas por los selectores
+function cursosFiltrados() {
+  return OFERTAS_EDUCATIVAS.filter(c => {
+    if (filtros.tipo && c.tipo !== filtros.tipo) return false;
+    if (filtros.area && c.area !== filtros.area) return false;
+    if (filtros.modalidad && c.modalidad !== filtros.modalidad) return false;
+    return true;
+  });
+}
+
+// Aplicar filtros y refrescar mapa y listas
+function aplicarFiltros() {
+  const tipo = document.getElementById('filtro-tipo');
+  const area = document.getElementById('filtro-area');
+  const modalidad = document.getElementById('filtro-modalidad');
+
+  filtros.tipo = tipo ? (tipo.value === 'todos' ? '' : tipo.value) : '';
+  filtros.area = area ? (area.value === 'todas' ? '' : area.value) : '';
+  filtros.modalidad = modalidad ? (modalidad.value === 'todas' ? '' : modalidad.value) : '';
+
+  const activo = filtros.tipo !== '' || filtros.area !== '' || filtros.modalidad !== '';
+
+  markers.forEach(marker => {
+    const localidad = marker.localidadData;
+    const cursos = cursosFiltrados().filter(c => c.localidad === localidad.nombre).length;
+    marker.setIcon(createLocalidadIcon({ ...localidad, cursos }));
+    marker.setOpacity(activo && cursos === 0 ? 0.25 : 1);
+  });
+
+  renderAnexosList();
+  if (selectedAnexo) selectAnexo(selectedAnexo);
 }
 
 // Calcular distancia Haversine
@@ -482,6 +516,20 @@ document.addEventListener('DOMContentLoaded', () => {
   slidersKm.forEach(({ slider }) => {
     slider.addEventListener('input', (e) => actualizarRadio(e.target.value, slider));
   });
+
+  // Filtros de oferta
+  ['filtro-tipo', 'filtro-area', 'filtro-modalidad'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', aplicarFiltros);
+  });
+
+  // Contadores reales del encabezado
+  const statCarreras = document.getElementById('stat-carreras');
+  const statAnexos = document.getElementById('stat-anexos');
+  const statLocalidades = document.getElementById('stat-localidades');
+  if (statCarreras) statCarreras.textContent = OFERTAS_EDUCATIVAS.length;
+  if (statAnexos) statAnexos.textContent = ANEXOS_ESRN.length;
+  if (statLocalidades) statLocalidades.textContent = LOCALIDADES_OFERTA.length;
 
   setTimeout(() => {
     const loading = document.getElementById('loading');

@@ -406,7 +406,7 @@
         <div class="progress-fill" id="progress" style="width: 0%"></div>
       </div>
       <div class="stats-mini">
-        <span id="pregunta-actual">Paso 1 de 6</span>
+        <span id="pregunta-actual">Paso 1 de 5</span>
         <span id="carreras-filtradas">140 carreras disponibles</span>
       </div>
     </div>
@@ -456,7 +456,7 @@
 
       // Perfil por intereses
       if (r.intereses) {
-        if (r.intereses.some(i => i.includes('Salud'))) perfiles.push('.helper');
+        if (r.intereses.some(i => i.includes('Salud'))) perfiles.push('helper');
         if (r.intereses.some(i => i.includes('Tecnología'))) perfiles.push('analytical');
         if (r.intereses.some(i => i.includes('Educación'))) perfiles.push('educador');
         if (r.intereses.some(i => i.includes('Industria'))) perfiles.push('maker');
@@ -806,6 +806,35 @@
       }, 600);
     }
 
+    // Mapa de áreas a etiquetas con emoji
+    const AREA_EMOJI = {
+      'Salud': '🏥 Salud',
+      'Educación': '📚 Educación',
+      'Tecnología': '💻 Tecnología',
+      'Informática': '💻 Tecnología',
+      'Administración': '💼 Administración',
+      'Industria': '🏗️ Industria',
+      'Turismo': '✈️ Turismo',
+      'Gastronomía': '✈️ Turismo',
+      'Arte': '🎨 Arte y Diseño',
+      'Diseño': '🎨 Arte y Diseño',
+      'Minería': '⚡ Minería y Energía',
+      'Energía': '⚡ Minería y Energía',
+      'Agropecuario': '🌾 Agropecuario',
+      'Producción': '🌾 Agropecuario',
+      'Derecho': '⚖️ Derecho',
+      'Jurídico': '⚖️ Derecho'
+    };
+
+    // Devuelve las áreas base (claves de AREA_EMOJI) para una opción elegida
+    function basesDeArea(opcion) {
+      const etiquetas = Object.keys(AREA_EMOJI).filter(k => AREA_EMOJI[k] === opcion);
+      if (etiquetas.length > 0) return etiquetas;
+      const match = opcion.match(/([\w\u00C0-\u00FF][\w\u00C0-\u00FF\s]*?)[\s]*[\(]/);
+      if (match) return [match[1].trim()];
+      return [opcion.replace(/[^\w\u00C0-\u00FF\s]/g, '').trim()];
+    }
+
     function actualizarOpcionesIntereses(movilidad) {
       const anexo = estado.anexoSeleccionado;
       let carrerasDisponibles = [...TODAS_LAS_CARRERAS];
@@ -825,36 +854,30 @@
       const areasDisponibles = new Set();
       carrerasDisponibles.forEach(c => {
         if (c.area) {
-          const areaEmoji = {
-            'Salud': '🏥 Salud',
-            'Educación': '📚 Educación',
-            'Tecnología': '💻 Tecnología',
-            'Informática': '💻 Tecnología',
-            'Administración': '💼 Administración',
-            'Industria': '🏗️ Industria',
-            'Turismo': '✈️ Turismo',
-            'Gastronomía': '✈️ Turismo',
-            'Arte': '🎨 Arte y Diseño',
-            'Diseño': '🎨 Arte y Diseño',
-            'Minería': '⚡ Minería y Energía',
-            'Energía': '⚡ Minería y Energía',
-            'Agropecuario': '🌾 Agropecuario',
-            'Producción': '🌾 Agropecuario',
-            'Derecho': '⚖️ Derecho',
-            'Jurídico': '⚖️ Derecho'
-          };
-          
-          Object.keys(areaEmoji).forEach(key => {
+          Object.keys(AREA_EMOJI).forEach(key => {
             if (c.area.includes(key)) {
-              areasDisponibles.add(areaEmoji[key]);
+              areasDisponibles.add(AREA_EMOJI[key]);
             }
           });
         }
       });
 
       const preguntaIntereses = preguntas.find(p => p.id === 'intereses');
-      if (preguntaIntereses && areasDisponibles.size > 0) {
-        preguntaIntereses.opciones = [...areasDisponibles].sort();
+      if (preguntaIntereses) {
+        if (areasDisponibles.size > 0) {
+          preguntaIntereses.opciones = [...areasDisponibles].sort();
+        } else {
+          const todas = new Set();
+          TODAS_LAS_CARRERAS.forEach(c => {
+            if (c.area) {
+              Object.keys(AREA_EMOJI).forEach(key => {
+                if (c.area.includes(key)) todas.add(AREA_EMOJI[key]);
+              });
+            }
+          });
+          preguntaIntereses.opciones = [...todas].sort();
+          preguntaIntereses.mensaje = '🎯 No encontramos carreras cerca de tu comunidad, así que te mostramos todas las áreas disponibles. ¿Cuál te interesa más? (Elegí una o varias)';
+        }
       }
     }
 
@@ -898,10 +921,7 @@
       // Filtrar por intereses (con fallback)
       let candidatasConArea = candidatas;
       if (estado.respuestas.intereses && estado.respuestas.intereses.length > 0) {
-        const areas = estado.respuestas.intereses.map(r => {
-          const match = r.match(/(\w[\w\s]*?)[\s]*[\(]/);
-          return match ? match[1].trim() : r.replace(/[^\w\s]/g, '').trim();
-        });
+        const areas = estado.respuestas.intereses.flatMap(basesDeArea);
 
         candidatasConArea = candidatas.filter(c => 
           areas.some(a => c.area?.includes(a) || c.carrera?.includes(a))
