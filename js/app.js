@@ -460,21 +460,28 @@ document.addEventListener('DOMContentLoaded', () => {
     busquedaRapida(e.target.value);
   });
 
-  // Slider de kilómetros
-  const sliderKm = document.getElementById('filtro-km');
-  const kmValor = document.getElementById('km-valor');
-  
-  if (sliderKm && kmValor) {
-    sliderKm.addEventListener('input', (e) => {
-      radioBusqueda = parseInt(e.target.value);
-      kmValor.textContent = radioBusqueda;
-      // Actualizar lista de anexos
-      renderAnexosList();
-      if (selectedAnexo) {
-        selectAnexo(selectedAnexo);
-      }
+  // Slider de kilómetros (PC y móvil sincronizados)
+  const slidersKm = [
+    { slider: document.getElementById('filtro-km'), label: document.getElementById('km-valor') },
+    { slider: document.getElementById('filtro-km-mobile'), label: document.getElementById('km-valor-mobile') }
+  ].filter(s => s.slider && s.label);
+
+  function actualizarRadio(valor, origen) {
+    radioBusqueda = parseInt(valor);
+    slidersKm.forEach(({ slider, label }) => {
+      label.textContent = radioBusqueda;
+      if (slider !== origen) slider.value = radioBusqueda;
     });
+    // Actualizar lista de anexos
+    renderAnexosList();
+    if (selectedAnexo) {
+      selectAnexo(selectedAnexo);
+    }
   }
+
+  slidersKm.forEach(({ slider }) => {
+    slider.addEventListener('input', (e) => actualizarRadio(e.target.value, slider));
+  });
 
   setTimeout(() => {
     const loading = document.getElementById('loading');
