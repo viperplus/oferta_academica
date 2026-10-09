@@ -1086,14 +1086,6 @@ body {
     height: calc(100dvh - 56px);
   }
 
-  .anexos-list {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 8px;
-    padding: 8px;
-  }
-
   .km-mobile {
     display: block;
     position: absolute;

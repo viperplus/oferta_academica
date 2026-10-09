@@ -406,7 +406,7 @@
         <div class="progress-fill" id="progress" style="width: 0%"></div>
       </div>
       <div class="stats-mini">
-        <span id="pregunta-actual">Paso 1 de 5</span>
+        <span id="pregunta-actual">Paso 1 de ${preguntas.length}</span>
         <span id="carreras-filtradas">140 carreras disponibles</span>
       </div>
     </div>
@@ -885,7 +885,7 @@
       document.getElementById('carreras-filtradas').textContent = 
         `${estado.carrerasFiltradas.length} carreras disponibles`;
       const index = preguntas.indexOf(estado.pasoActual);
-      document.getElementById('pregunta-actual').textContent = `Paso ${index + 1} de ${preguntas.length}`;
+    document.getElementById('pregunta-actual').textContent = `Paso ${index + 1} de ${preguntas.length}`;
       document.getElementById('progress').style.width = `${((index + 1) / preguntas.length) * 100}%`;
     }
 
