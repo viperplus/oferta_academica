@@ -356,35 +356,11 @@ function selectAnexo(anexo) {
     marker.openPopup();
   }
 
-  updateInfoPanel(anexo);
+  // panel de información desactivado (sin elemento en HTML)
 }
 
-// Actualizar panel de información
-function updateInfoPanel(anexo) {
-  const cursosCercanos = findCursosCercanos(anexo.lat, anexo.lng, radioBusqueda);
-  const panel = document.getElementById('info-panel');
-
-  if (panel) {
-    panel.innerHTML = `
-      <div class="panel-anexo-activo">
-        <div class="panel-header-activo">
-          <span>📚</span>
-          <h3>${anexo.nombre}</h3>
-        </div>
-        <p class="panel-localidad">${anexo.localidad}, ${anexo.departamento}</p>
-        <div class="panel-stats-activos">
-          <div class="panel-stat">
-            <span class="panel-stat-num">${cursosCercanos.length}</span>
-            <span class="panel-stat-label">carreras en ${radioBusqueda}km</span>
-          </div>
-        </div>
-        <div class="panel-orientaciones">
-          ${anexo.orientaciones.map(o => `<span class="orientacion-tag">${o}</span>`).join('')}
-        </div>
-      </div>
-    `;
-  }
-}
+// Actualizar panel de información (desactivado)
+function updateInfoPanel() {}
 
 // Renderizar lista de anexos mejorada
 function renderAnexosList() {
