@@ -25,9 +25,9 @@ const ANEXOS_ESRN = [
     localidad: "Rincón Treneta",
     lat: -40.953056,
     lng: -67.054444,
-    departamento: "Avellaneda",
+    departamento: "Nueve de Julio",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Avellaneda"
+    descripcion: "Paraje rural del departamento Nueve de Julio"
   },
   {
     id: 6,
@@ -35,9 +35,9 @@ const ANEXOS_ESRN = [
     localidad: "Comicó",
     lat: -41.070833,
     lng: -67.477778,
-    departamento: "Pilcaniyeu",
+    departamento: "Nueve de Julio",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Pilcaniyeu"
+    descripcion: "Paraje rural del departamento Nueve de Julio"
   },
   {
     id: 8,
@@ -45,9 +45,9 @@ const ANEXOS_ESRN = [
     localidad: "Yaminué",
     lat: -40.976389,
     lng: -67.191944,
-    departamento: "Avellaneda",
+    departamento: "Nueve de Julio",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Avellaneda"
+    descripcion: "Paraje rural del departamento Nueve de Julio"
   },
   {
     id: 9,
@@ -55,9 +55,9 @@ const ANEXOS_ESRN = [
     localidad: "Cerro Policía",
     lat: -39.733333,
     lng: -68.516667,
-    departamento: "25 de Mayo",
+    departamento: "El Cuy",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento 25 de Mayo"
+    descripcion: "Paraje rural del departamento El Cuy"
   },
   {
     id: 10,
@@ -65,9 +65,9 @@ const ANEXOS_ESRN = [
     localidad: "Aguada Guzmán",
     lat: -39.983333,
     lng: -68.866667,
-    departamento: "25 de Mayo",
+    departamento: "El Cuy",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento 25 de Mayo"
+    descripcion: "Paraje rural del departamento El Cuy"
   },
   {
     id: 11,
@@ -75,9 +75,9 @@ const ANEXOS_ESRN = [
     localidad: "Mencué",
     lat: -40.416667,
     lng: -69.633333,
-    departamento: "Pilcaniyeu",
+    departamento: "El Cuy",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Pilcaniyeu"
+    descripcion: "Paraje rural del departamento El Cuy"
   },
   {
     id: 12,
@@ -95,9 +95,9 @@ const ANEXOS_ESRN = [
     localidad: "Naupa Huen",
     lat: -39.83,
     lng: -69.508889,
-    departamento: "25 de Mayo",
+    departamento: "El Cuy",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento 25 de Mayo"
+    descripcion: "Paraje rural del departamento El Cuy"
   },
   {
     id: 14,
@@ -155,9 +155,9 @@ const ANEXOS_ESRN = [
     localidad: "Peñas Blancas",
     lat: -37.693056,
     lng: -67.87,
-    departamento: "Valcheta",
+    departamento: "General Roca",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Valcheta"
+    descripcion: "Paraje rural del departamento General Roca"
   },
   {
     id: 20,
@@ -175,29 +175,29 @@ const ANEXOS_ESRN = [
     localidad: "Cona Niyeu",
     lat: -41.865833,
     lng: -66.938056,
-    departamento: "Valcheta",
+    departamento: "Nueve de Julio",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Valcheta"
+    descripcion: "Paraje rural del departamento Nueve de Julio"
   },
   {
     id: 22,
     nombre: "Anexo N°22",
     localidad: "El Caín",
-    lat: -42.1,
-    lng: -68.266667,
-    departamento: "Valcheta",
+    lat: -41.66701,
+    lng: -68.161536,
+    departamento: "25 de Mayo",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Valcheta"
+    descripcion: "Paraje rural del departamento 25 de Mayo"
   },
   {
     id: 23,
     nombre: "Anexo N°23",
     localidad: "Lago Pellegrini",
-    lat: -38.666667,
-    lng: -68,
-    departamento: "25 de Mayo",
+    lat: -38.710832,
+    lng: -68.038413,
+    departamento: "General Roca",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento 25 de Mayo"
+    descripcion: "Paraje rural del departamento General Roca"
   },
   {
     id: 24,
@@ -205,7 +205,7 @@ const ANEXOS_ESRN = [
     localidad: "Villa Llanquín",
     lat: -40.895556,
     lng: -71.036667,
-    departamento: "El Cuy",
+    departamento: "Pilcaniyeu",
     orientaciones: ["Ciencias Naturales", "Turismo"],
     descripcion: "Villa y municipio sobre el río Limay"
   },
@@ -233,11 +233,11 @@ const ANEXOS_ESRN = [
     id: 32,
     nombre: "Anexo N°32",
     localidad: "Valle Verde",
-    lat: -37.613889,
-    lng: -68.030556,
-    departamento: "Pilcaniyeu",
+    lat: -37.615884,
+    lng: -68.031811,
+    departamento: "General Roca",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Pilcaniyeu"
+    descripcion: "Paraje rural del departamento General Roca"
   },
   {
     id: 36,
@@ -245,9 +245,9 @@ const ANEXOS_ESRN = [
     localidad: "Colan Conhué",
     lat: -40.666667,
     lng: -69.1,
-    departamento: "Valcheta",
+    departamento: "25 de Mayo",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Valcheta"
+    descripcion: "Paraje rural del departamento 25 de Mayo"
   },
   {
     id: 37,
@@ -255,9 +255,9 @@ const ANEXOS_ESRN = [
     localidad: "Blancura Centro",
     lat: -40.365833,
     lng: -69.778889,
-    departamento: "Valcheta",
+    departamento: "El Cuy",
     orientaciones: ["Ciencias Naturales", "Turismo"],
-    descripcion: "Paraje rural del departamento Valcheta"
+    descripcion: "Paraje rural del departamento El Cuy"
   }
 ];
 
