@@ -499,14 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.addEventListener('change', aplicarFiltros);
   });
 
-  // Contadores reales del encabezado
-  const statCarreras = document.getElementById('stat-carreras');
-  const statAnexos = document.getElementById('stat-anexos');
-  const statLocalidades = document.getElementById('stat-localidades');
-  if (statCarreras) statCarreras.textContent = OFERTAS_EDUCATIVAS.length;
-  if (statAnexos) statAnexos.textContent = ANEXOS_ESRN.length;
-  if (statLocalidades) statLocalidades.textContent = LOCALIDADES_OFERTA.length;
-
   setTimeout(() => {
     const loading = document.getElementById('loading');
     if (loading) loading.style.display = 'none';

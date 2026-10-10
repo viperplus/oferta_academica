@@ -347,21 +347,6 @@ body {
   font-size: 0.85rem;
 }
 
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #6ac64f;
-}
-
-.stat-label {
-  opacity: 0.8;
-  font-size: 0.75rem;
-}
-
 /* Main Layout */
 .main-container {
   display: flex;
@@ -1102,9 +1087,6 @@ body {
   .header-stats {
     display: flex;
     gap: 8px;
-  }
-  .header-stats .stat-item {
-    display: none;
   }
   .header-stats button {
     padding: 6px 10px;
